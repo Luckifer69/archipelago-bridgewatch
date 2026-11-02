@@ -1,21 +1,11 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { seededShuffle } from '../fixtures/graphs.js';
 import { computeLayout, formatPositions, orient, rescale } from '../scripts/layout.js';
 import { ARCHIPELAGO } from '../src/archipelago/index.js';
 import { POSITIONS } from '../src/archipelago/positions.js';
 import { BRIDGES, ISLANDS } from '../src/archipelago/topology.js';
-
-const seededShuffle = (items, seed) => {
-  const result = [...items];
-  let state = seed;
-  for (let i = result.length - 1; i > 0; i--) {
-    state = (state * 16807) % 2147483647;
-    const j = state % (i + 1);
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-};
 
 test('repeat runs give identical positions', () => {
   assert.deepEqual(computeLayout(ISLANDS, BRIDGES), computeLayout(ISLANDS, BRIDGES));
