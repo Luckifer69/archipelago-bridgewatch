@@ -46,10 +46,11 @@ PASS  phone width: no horizontal page scroll  -> 390,390
 PASS  phone width: every required table column is visible  -> 348,348
 PASS  light theme: event 44 has the same text, values and map states as the control
 PASS  light theme: the final state matches the control
+PASS  light theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds
 PASS  light theme: no console errors
 PASS  dark theme: event 44 has the same text, values and map states as the control
 PASS  dark theme: the final state matches the control
 PASS  dark theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds
 PASS  dark theme: no console errors
 
-41 of 41 checks passed
+42 of 42 checks passed

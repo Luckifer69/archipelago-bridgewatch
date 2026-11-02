@@ -172,7 +172,7 @@ for (const colorScheme of ['light', 'dark']) {
   check(`${colorScheme} theme: the final state matches the control`, JSON.stringify(await state(themed)) === JSON.stringify(control[56]));
   if (colorScheme === 'dark') await themed.screenshot({ path: `${out}/11-dark-final.png` });
   const low = [...lowLoaded, ...await contrast(themed, FINAL_PAIRS)];
-  if (colorScheme === 'dark') check(`${colorScheme} theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds`, low.length === 0, low.join(', '));
+  check(`${colorScheme} theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds`, low.length === 0, low.join(', '));
   check(`${colorScheme} theme: no console errors`, themeErrors.length === 0, themeErrors.join(';'));
 }
 

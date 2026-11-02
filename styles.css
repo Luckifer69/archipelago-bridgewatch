@@ -1,7 +1,7 @@
 :root {
   color-scheme: light dark;
   --ink: #17303a;
-  --muted: #55707a;
+  --muted: #4f6a74;
   --page: #eef4f6;
   --panel: #ffffff;
   --line: #c9d8dd;
@@ -15,7 +15,7 @@
   --sand: #f3d9a4;
   --non-tree: #6a3fa0;
   --danger: #b3261e;
-  --current: #e8890c;
+  --current: #c46a00;
   --highlight: #fdf3e3;
   --gap: 10px;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
