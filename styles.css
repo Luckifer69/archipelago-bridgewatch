@@ -338,3 +338,149 @@ h2 {
 .legend-note {
   color: var(--muted);
 }
+
+/* Current event */
+.event-panel p {
+  margin: 0 0 4px;
+}
+
+.event-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.event-change {
+  padding: 4px 8px;
+  border-left: 4px solid var(--current);
+  background: #fdf3e3;
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.errors {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--danger);
+}
+
+/* Island table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  padding: 3px 6px;
+  border-bottom: 2px solid var(--line);
+  background: var(--panel);
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #e6eef1;
+}
+
+.id-cell {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hosts-cell {
+  color: var(--muted);
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.current-row td {
+  background: #fdf3e3;
+}
+
+/* Safety summary */
+.summary-status {
+  margin: 0 0 4px;
+  font-size: 0.86rem;
+}
+
+.summary-columns {
+  display: grid;
+  gap: 2px 14px;
+}
+
+/* Articulation proofs are longer, because the rule's >= takes an extra character. */
+@media (min-width: 1000px) {
+  .summary-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  }
+}
+
+h3 {
+  margin: 0 0 2px;
+  font-size: 0.86rem;
+}
+
+.proofs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+}
+
+.proofs li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  line-height: 1.45;
+}
+
+.proof {
+  color: var(--muted);
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 0.76rem;
+}
+
+.summary-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* Event history */
+#history {
+  margin: 0;
+  padding-left: 34px;
+  font-size: 0.8rem;
+}
+
+#history li {
+  padding: 1px 4px;
+}
+
+#history li::marker {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.history-heading {
+  font-weight: 600;
+}
+
+.history-change {
+  display: block;
+  color: var(--muted);
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+}
+
+.current-item {
+  border-radius: 4px;
+  background: #fdf3e3;
+}
