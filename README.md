@@ -18,8 +18,10 @@ Then open <http://localhost:8000/>.
 |---|---|
 | **Load My Archipelago** | Loads the map, with everything unvisited |
 | **Step** | Advances exactly one event. Pressing it mid-animation completes that event and starts the next. |
-| **Run to End** | Plays every remaining event, about 20 seconds in total. Press it again to skip to the end. |
+| **Run to End** | Plays every remaining event, about 20 seconds in total. While it plays, the button reads **Skip to End**. |
 | **Reset** | Returns to the loaded map, with everything unvisited |
+
+The page follows your browser's light or dark setting. No box moves or resizes as the replay steps, so each value stays where you last saw it.
 
 ## Explaining a result
 
@@ -82,6 +84,8 @@ The commit history explains each decision in the commit that made it.
 | graphology ForceAtlas2, run once and saved | Rerunning one command is quicker than placing islands by hand, and the map can't shift | Calculating in the browser: adds a dependency, and the brief requires positions before validation |
 | Full snapshots in each event | Going to any state means drawing one snapshot, with no second copy of the rules | Undo logic, replaying events from the start |
 | `requestAnimationFrame` for animation | Moving a marker along a straight line is simple interpolation | An animation library: a dependency for one small helper |
+| `prefers-color-scheme` on the existing colour tokens | The browser already knows the viewer's choice, and one block recolours everything | A theme switch: a control and saved state for something the browser already answers |
+| Fixed row heights and table column widths | Nothing moves between steps, however long the text is | Sizing boxes from their contents: the table moved up and down at each step |
 
 ## Documents
 
@@ -99,11 +103,13 @@ The commit history explains each decision in the commit that made it.
 | Automated tests | 151 of 151 pass ([output](docs/evidence/test-output.txt)) | `npm ci && npm test` |
 | Independent answers | All 4 graphs agree with brute force | `python3 docs/oracle-check.py` |
 | Mutation check: breaks the code on purpose | 19 of 19 caught ([output](docs/evidence/mutation-check.txt)) | `node docs/evidence/mutation-check.mjs` |
-| Browser walkthrough in Chrome | 34 of 34 pass ([output](docs/evidence/browser-walkthrough.txt), [screenshots](docs/evidence/screenshots/)) | `npm install --no-save playwright-core && node docs/evidence/browser-walkthrough.mjs` |
+| Browser walkthrough in Chrome | 67 of 67 pass ([output](docs/evidence/browser-walkthrough.txt), [screenshots](docs/evidence/screenshots/)) | `npm install --no-save playwright-core && node docs/evidence/browser-walkthrough.mjs` |
 
 The tests also compare the engine with brute-force removal on 500 repeatable random graphs.
 
 Animation runs only in the browser, so the walkthrough covers it. It compares every animated state with an unanimated control run, including rapid Step presses and Reset mid-animation.
+
+The walkthrough also checks both colour themes, including measured contrast. At 8 window sizes, it checks that no box or table column moves at any event.
 
 ## Changing the map
 
@@ -115,4 +121,11 @@ Until step 3 is done, tests pinned to the documented map fail on purpose. Adding
 
 ## Not included
 
-There is no graph editor, upload, Back button, speed control, Pause button, saved data or backend, as none of them is required. Invalid graphs are demonstrated through tests, which the brief allows. If the demo data itself were invalid, the page would show the validation errors.
+There is no graph editor, upload, Back button, speed control, Pause button, theme switch, saved data or backend, as none of them is required. Invalid graphs are demonstrated through tests, which the brief allows. If the demo data itself were invalid, the page would show the validation errors.
+
+## Known limits
+
+- **Small map text on small screens:** the map scales to fit its panel, so bridge labels are about 10px at 1536x738, 7.7px at 1366x650 and about 5px on a phone. The table and summary show the same values at a readable size.
+- **Short windows:** below about 650px tall, or 688px when the window is under 1366px wide, the island table scrolls inside its box. Nothing moves, but not every island shows at once.
+- **Narrow windows:** widths below 360px weren't tested, and long text may need more room than is reserved there. At 1000px wide, the final summary scrolls by a few pixels inside its box.
+- **The ↺ symbol:** it renders small in some system fonts. The dashed line and the legend carry the same meaning.

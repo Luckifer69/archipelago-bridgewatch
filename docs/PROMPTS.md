@@ -17,6 +17,14 @@ This log records the prompts used to turn the problem statement into a specifica
 | 9 | Chose "Leave it out" when asked about a Back button | Back stays out of scope. Snapshots keep it easy to add if the live modification round asks for it. |
 | 10 | "Make sure you use atomic git commits and in description mention why behind every technical decisions made by you" | Added the commit rules. The commit history now records the reasoning behind each decision. |
 
+## Prompts after the build
+
+| # | Prompt | What it changed |
+|---|---|---|
+| 11 | "I have given you access to chrome to check if UI is as intended by your code" | Moved the check to the real browser. It found classic scrollbars that the automated runs hid, and the table moving between steps. |
+| 12 | "Also please provide a dark theme and choose based on browser default" | Added a dark theme through `prefers-color-scheme`, with no switch to build. Measuring its contrast also exposed two weak colours in the light theme. |
+| 13 | "Shouldn't we keep each box, like even history stable in it's position without resizing at each step" | Replaced a planned one-box patch with a rule: no box moves at any step. Measuring against that rule found the moving columns, the top bar wrapping and the growing boxes on smaller screens. |
+
 ## Where human and AI ideas changed each other
 
 **The sync design (prompt 8).** The assistant's earlier design rebuilt the state by replaying events from the start. The prompt's idea of a UI that only renders precomputed events led to something simpler: each event stores a full snapshot, so there is no second copy of the update logic.
@@ -45,6 +53,9 @@ The approved plan is in `PLAN.md`.
 | `docs/oracle-check.py` and a mutation check were added | The script works out the expected answers with no app code. The mutation check breaks the code on purpose, because passing tests only count if they can fail. |
 | The browser walkthrough became a script, using `playwright-core` installed with `--no-save` | A script can be rerun and compared. Only this check needs the package, so the project doesn't depend on it. |
 | The phone table fix got its own commit, and step 5's one commit became several | Each is a separate logical change, under the atomic commit rule. |
+| A dark theme was added after the build | Prompt 12. The tokens were already in one place, so it needed one block of values and no change to any selector. |
+| Run to End's button reads Skip to End while playing | The plan's skip behaviour stayed, but the long status message explaining it wrapped the top bar and moved every box. |
+| The walkthrough keeps real scrollbars | Playwright hides them by default, which hid a layout shift that was visible in real Chrome. |
 
 ## Constraints given to the assistant
 
@@ -71,6 +82,9 @@ The assistant proposed these, and they were accepted when the plan was approved:
 | Numbers change when the animation finishes | Each change follows the movement that caused it | Step feels slower, so pressing it mid-animation completes the current event at once |
 | The summary fills in as the replay proves each result | Answers don't appear before their proof | The summary is empty at the start |
 | Tests pin the documented main map | An accidental change fails loudly | A deliberate map change also needs its expected values updated |
+| Fixed box heights | Nothing moves between steps | Short events leave blank space in their box, most visibly between 1000px and 1365px wide |
+| Hosts column hidden below 1240px wide | All 8 islands fit without scrolling | Festival roles aren't in the table at those widths |
+| The theme follows the browser, with no switch | Nothing to build, save or explain | A viewer can't choose a theme different from their browser's setting |
 
 Assumptions the brief left open:
 - **Reset** returns to the loaded map, not a blank page.
@@ -86,6 +100,10 @@ Assumptions the brief left open:
 | The walkthrough itself | Its island selector also matched table rows, so the script was checking the wrong elements | Narrowed the selector to the map |
 | The phone screenshot | The required Low column was clipped | The optional Hosts column hides at phone width, and a browser check now covers this |
 | Reviewing the screenshots | The B04 proof wrapped onto a second line at 1280x800 | Rebalanced the summary columns and reduced the proof text size. Measured with no wrapping from 1280px wide up; narrower screens still wrap, and stay readable |
+| Measuring contrast for the dark theme | In the light theme, bridge labels reached 4.39:1 and the current island's ring 2.18:1 | Darkened the two colours, to 4.80:1 and 3.23:1, and kept the check on both themes |
+| Real Chrome, then measuring every box through a replay | The table moved up and down at each step and its columns shifted. On smaller screens every box moved, and Run to End's message wrapped the top bar | Fixed row heights and column widths, reserved heights when stacked, and a button label in place of the message. The walkthrough now checks this at 8 sizes |
+| The new layout check | My reserved heights for stacked panels did nothing, because a later `.panel` rule overrode them | Moved them after that rule |
+| Reviewing the phone screenshot | The right edge looked cut off, and the check compared against a width that includes the scrollbar | There was no overflow: full-page capture was clipping it. The check now uses `clientWidth`, and the screenshot uses a tall viewport |
 
 ## Assistant mistakes
 
@@ -94,6 +112,7 @@ Assumptions the brief left open:
 | Said the brief supplies island positions | Prompt 3 | Corrected, and led to the layout library |
 | Assumed the folder was empty, and overwrote `package.json` and `.gitignore` without looking | The assistant, from a `git init` warning | The earlier `package.json` was still in the session's file history, and nothing important was lost |
 | Stopped a test server with a broad `pkill -f 'node server.js'`, which ended its own shell and could have matched any process with that text | The assistant, from the exit code | No test server was left running. It should have used the process ID. The walkthrough now starts and stops its own server. |
+| Reported the UI as verified when no check looked at whether boxes moved, and when automated runs hid the scrollbars | Prompts 11 and 13 | The walkthrough now measures every box at every event, with real scrollbars |
 
 ## Live modification rehearsal
 
