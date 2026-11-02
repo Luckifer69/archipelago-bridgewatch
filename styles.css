@@ -1,0 +1,149 @@
+:root {
+  --ink: #17303a;
+  --muted: #55707a;
+  --page: #eef4f6;
+  --panel: #ffffff;
+  --line: #c9d8dd;
+  --accent: #12636e;
+  --gap: 10px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+}
+
+/* Everything shares one screen, so a volunteer can explain a result without scrolling. */
+@media (min-width: 1000px) and (min-height: 620px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px var(--gap);
+  background: var(--accent);
+  color: #fff;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+button {
+  padding: 6px 12px;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #d9eef5;
+}
+
+button:focus-visible {
+  outline: 3px solid #ffc857;
+  outline-offset: 2px;
+}
+
+button:disabled {
+  border-color: transparent;
+  background: rgb(255 255 255 / 35%);
+  color: rgb(255 255 255 / 85%);
+  cursor: not-allowed;
+}
+
+.progress {
+  margin: 0 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.layout {
+  display: grid;
+  gap: var(--gap);
+  padding: var(--gap);
+}
+
+@media (min-width: 1000px) {
+  .layout {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) 190px;
+    grid-template-areas:
+      'map event'
+      'map table'
+      'summary history';
+  }
+
+  .map-panel {
+    grid-area: map;
+  }
+
+  .event-panel {
+    grid-area: event;
+  }
+
+  .table-panel {
+    grid-area: table;
+  }
+
+  .summary-panel {
+    grid-area: summary;
+  }
+
+  .history-panel {
+    grid-area: history;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+h2 {
+  flex: none;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}

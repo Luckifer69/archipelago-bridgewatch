@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Treasure-Island Bridge Safety Map</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>⚓ Treasure-Island Bridge Safety Map</h1>
+      <div class="controls">
+        <button id="load" type="button">Load My Archipelago</button>
+        <button id="step" type="button">Step</button>
+        <button id="run" type="button">Run to End</button>
+        <button id="reset" type="button">Reset</button>
+      </div>
+      <p id="progress" class="progress" aria-live="polite"></p>
+    </header>
+
+    <main class="layout">
+      <section class="panel map-panel" aria-labelledby="map-heading">
+        <h2 id="map-heading">Island map</h2>
+        <svg id="map" role="img" aria-label="Island map"></svg>
+      </section>
+      <section class="panel event-panel" aria-labelledby="event-heading">
+        <h2 id="event-heading">Current event</h2>
+        <div id="current-event" aria-live="polite"></div>
+      </section>
+      <section class="panel table-panel" aria-labelledby="table-heading">
+        <h2 id="table-heading">Island table</h2>
+        <div class="scroll"><table id="node-table"></table></div>
+      </section>
+      <section class="panel summary-panel" aria-labelledby="summary-heading">
+        <h2 id="summary-heading">Safety summary</h2>
+        <div id="summary" class="scroll"></div>
+      </section>
+      <section class="panel history-panel" aria-labelledby="history-heading">
+        <h2 id="history-heading">Event history</h2>
+        <ol id="history" class="scroll"></ol>
+      </section>
+    </main>
+  </body>
+</html>
