@@ -1,0 +1,48 @@
+PASS  reduced motion: each Step updates immediately, 56 events
+PASS  reduced motion: no animation overlay is ever left behind
+PASS  reduced motion: Reset is exact
+PASS  reduced motion: Run to End jumps straight to the final state
+PASS  reduced motion: no console errors
+PASS  before load: only Load is enabled
+PASS  Load gives Event 0 of 56
+PASS  Load matches the control pre-traversal state
+PASS  everything fits at 1280x800 with no page scrolling  -> 800,800,1280,1280
+PASS  events 1-16 stepped with animation match the control
+PASS  mid-animation: marker and dashed line are on the map  -> {"marker":true,"dashed":true}
+PASS  mid-animation: FLAG low still shows 5  -> ▶ FLAG|Craft market|EMERALD|5|5
+PASS  mid-animation: the counter has not moved on yet  -> Event 16 of 56
+PASS  after animation: FLAG low shows 3  -> ▶ FLAG|Craft market|EMERALD|5|3
+PASS  after animation: state matches the control
+PASS  10 rapid Step presses advance exactly 10 events  -> Event 27 of 56
+PASS  rapid presses end in the same state as the control
+PASS  event 40 matches the control (DOUBLOON: 3 >= 3)
+PASS  event 44 matches the control (B04: 3 > 2)
+PASS  event 44 explains B04 with its numbers  -> B04 is a critical bridgeNothing from DOUBLOON onward can reach COMPASS or earlier without B04, so closing it cuts that area off.low[DOUBLOON] = 3 > discovery[COMPASS] = 2: true
+PASS  Reset mid-animation: back to the pre-traversal state, and nothing redraws afterwards
+PASS  Run to End: Step is disabled while playing
+PASS  Run to End: the status explains how to skip  -> Event 0 of 56 · playing, press Run to End again to skip
+PASS  Run to End: plays gradually, not instantly  -> at event 4 after 1.6s
+PASS  Skip: pressing Run to End again jumps to the final state
+PASS  Skip: Step and Run are disabled at the end
+PASS  second Reset is exact
+PASS  a full animated run takes about 20 seconds  -> 21.5s
+PASS  the animated run ends in the same state and history as stepping
+PASS  stepping all 56 events with animation matches the complete run
+PASS  Load after a finished run restores the same pre-traversal state
+PASS  no console errors in the whole walkthrough
+
+--- final summary ---
+Components: 1 · Inspection completeCritical bridges (3)⚠ B04low[DOUBLOON] = 3 > discovery[COMPASS] = 2⚠ B08low[GULL] = 6 > discovery[FLAG] = 5⚠ B09low[HOOK] = 7 > discovery[GULL] = 6Articulation islands (4)◆ COMPASSlow[DOUBLOON] = 3 >= discovery[COMPASS] = 2◆ DOUBLOONlow[EMERALD] = 3 >= discovery[DOUBLOON] = 3◆ FLAGlow[GULL] = 6 >= discovery[FLAG] = 5◆ GULLlow[HOOK] = 7 >= discovery[GULL] = 6
+--- final table ---
+▶ ANCHOR|Main gate|root|0|0
+BARREL|First-aid tent|ANCHOR|1|0
+◆ COMPASS|Food stalls|BARREL|2|0
+◆ DOUBLOON|Music stage|COMPASS|3|3
+EMERALD|Games|DOUBLOON|4|3
+◆ FLAG|Craft market|EMERALD|5|3
+◆ GULL|Lookout|FLAG|6|6
+HOOK|Treasure hunt|GULL|7|7
+PASS  phone width: no horizontal page scroll  -> 390,390
+PASS  phone width: every required table column is visible  -> 348,348
+
+34 of 34 checks passed

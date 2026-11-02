@@ -1,0 +1,21 @@
+caught   20 failing  bridge rule uses >= instead of >
+caught   15 failing  articulation rule uses > instead of >=
+caught    7 failing  back connection uses low instead of discovery
+caught   24 failing  return ignores the child low value
+caught   23 failing  root needs only 1 child
+caught   33 failing  root also gets the non-root rule
+caught   29 failing  parent treated as a back connection
+caught    5 failing  clock restarts for each component
+caught  101 failing  snapshots share one state object
+caught    6 failing  neighbours left unsorted
+caught    3 failing  locale sort instead of ASCII
+caught    3 failing  coordinate upper bound missing
+caught    2 failing  reversed duplicate pair missed
+caught    6 failing  failed load keeps the old graph
+caught    7 failing  Reset keeps the position
+caught    2 failing  Step mid-animation loses the press
+caught    2 failing  Reset leaves the animation running
+caught    1 failing  layout ignores sorting
+caught    1 failing  app reads the documented answers
+
+19 of 19 mutations caught
