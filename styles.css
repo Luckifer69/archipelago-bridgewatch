@@ -456,10 +456,10 @@ td {
   gap: 2px 14px;
 }
 
-/* Articulation proofs are longer, because the rule's >= takes an extra character. */
+/* Articulation proofs are longer, because island IDs are longer than bridge IDs. */
 @media (min-width: 1000px) {
   .summary-columns {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   }
 }
 
@@ -485,7 +485,7 @@ h3 {
 .proof {
   color: var(--muted);
   font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
 }
 
 .summary-empty {
