@@ -404,6 +404,13 @@ td {
   background: #fdf3e3;
 }
 
+/* On a phone the required columns must fit, so the optional one gives way. */
+@media (max-width: 520px) {
+  .hosts-column {
+    display: none;
+  }
+}
+
 /* Safety summary */
 .summary-status {
   margin: 0 0 4px;
@@ -455,9 +462,16 @@ h3 {
 
 /* Event history */
 #history {
+  max-height: 280px;
   margin: 0;
   padding-left: 34px;
   font-size: 0.8rem;
+}
+
+@media (min-width: 1000px) {
+  #history {
+    max-height: none;
+  }
 }
 
 #history li {

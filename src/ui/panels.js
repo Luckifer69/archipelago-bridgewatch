@@ -37,7 +37,7 @@ function renderTable(table, { graph, snapshot, event }) {
     return;
   }
   const headings = ['ID', 'Hosts', 'Parent', 'Discovery', 'Low'].map((text) => {
-    const heading = element('th', '', text);
+    const heading = element('th', text === 'Hosts' ? 'hosts-column' : '', text);
     heading.scope = 'col';
     return heading;
   });
@@ -52,7 +52,7 @@ function renderTable(table, { graph, snapshot, event }) {
       'tr',
       isCurrent ? 'current-row' : '',
       element('td', 'id-cell', `${markers}${node.id}`),
-      element('td', 'hosts-cell', node.role ?? '—'),
+      element('td', 'hosts-column hosts-cell', node.role ?? '—'),
       element('td', '', parentText),
       element('td', 'number', showValue(discovery)),
       element('td', 'number', showValue(low)),
