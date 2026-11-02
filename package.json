@@ -1,0 +1,10 @@
+{
+  "name": "treasure-island-bridge-safety-map",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive replay of a low-link DFS that reveals which bridge or island could split a festival.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
