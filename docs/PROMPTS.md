@@ -36,3 +36,4 @@ The approved plan is in `PLAN.md`.
 |---|---|
 | The plan and this log were committed in step 1 instead of step 5 | They already existed, and later commits record changes against them. |
 | Step 1 did not start from an empty folder, as the plan assumed | The session had been rewound after an earlier build. Its leftover documents and evidence described code that no longer existed, so they were moved out of the project and not reused as evidence. |
+| The layout script gained an orientation step, and uses ForceAtlas2's `linLogMode` | The default layout was taller than wide and ran right to left, while the map panel is wider than tall. `linLogMode` gave the largest measured gaps around islands and bridges. |

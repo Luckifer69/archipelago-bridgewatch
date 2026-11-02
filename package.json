@@ -5,6 +5,12 @@
   "description": "Interactive replay of a low-link DFS that reveals which bridge or island could split a festival.",
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "layout": "node scripts/layout.js"
+  },
+  "devDependencies": {
+    "graphology": "^0.26.0",
+    "graphology-layout": "^0.6.1",
+    "graphology-layout-forceatlas2": "^0.10.1"
   }
 }
