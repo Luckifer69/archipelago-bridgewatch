@@ -137,6 +137,45 @@ const tableFit = await ph.evaluate(() => { const box = document.querySelector('#
 check('phone width: every required table column is visible', tableFit[0] <= tableFit[1], tableFit.join(','));
 await ph.screenshot({ path: `${out}/9-phone.png`, fullPage: true });
 
+// Theme: the browser's setting picks the colours, and nothing else may differ from the light control.
+const contrast = (page, pairs) => page.evaluate((pairs) => {
+  const luminance = (css) => {
+    const [r, g, b] = css.match(/[\d.]+/g).slice(0, 3).map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const style = (selector) => getComputedStyle(document.querySelector(selector));
+  return pairs.map(([selector, prop, background, min]) => {
+    const [a, c] = [luminance(style(selector)[prop]), luminance(style(background).backgroundColor)];
+    return { selector, ratio: (Math.max(a, c) + 0.05) / (Math.min(a, c) + 0.05), min };
+  }).filter((pair) => pair.ratio < pair.min).map((pair) => `${pair.selector} ${pair.ratio.toFixed(2)}`);
+}, pairs);
+const LOADED_PAIRS = [['.edge-label', 'fill', '#map', 4.5], ['.edge-unvisited', 'stroke', '#map', 3], ['.island-unvisited', 'stroke', '#map', 3]];
+const FINAL_PAIRS = [
+  ['.topbar', 'color', '.topbar', 4.5], ['#load', 'color', '#load', 4.5],
+  ['.event-heading', 'color', '.panel', 4.5], ['.event-change', 'color', '.event-change', 4.5],
+  ['.hosts-cell', 'color', '.panel', 4.5], ['.current-row td', 'color', '.current-row td', 4.5], ['.proof', 'color', '.panel', 4.5],
+  ['.current-item .history-change', 'color', '.current-item', 4.5], ['.legend-note', 'color', '.panel', 4.5],
+  ['.edge-label-tree', 'fill', '#map', 4.5], ['.edge-label-non-tree', 'fill', '#map', 4.5], ['.edge-label-bridge', 'fill', '#map', 4.5],
+  ['.island-id', 'fill', '#map', 4.5], ['.island-name', 'fill', '#map', 4.5], ['.island-values', 'fill', '#map', 4.5],
+  ['.edge-tree', 'stroke', '#map', 3], ['.edge-non-tree', 'stroke', '#map', 3], ['.edge-bridge', 'stroke', '#map', 3],
+  ['.island-visited', 'stroke', '#map', 3], ['.island-ring', 'stroke', '#map', 3],
+];
+for (const colorScheme of ['light', 'dark']) {
+  const themed = await (await b.newContext({ viewport: { width: 1280, height: 800 }, colorScheme, reducedMotion: 'reduce' })).newPage();
+  const themeErrors = []; themed.on('console', m => { if (m.type()==='error') themeErrors.push(m.text()); }); themed.on('pageerror', e => themeErrors.push(String(e)));
+  await themed.goto(URL_UNDER_TEST); await themed.click('#load');
+  const lowLoaded = await contrast(themed, LOADED_PAIRS);
+  for (let i = 0; i < 44; i++) await themed.click('#step');
+  check(`${colorScheme} theme: event 44 has the same text, values and map states as the control`, JSON.stringify(await state(themed)) === JSON.stringify(control[44]));
+  if (colorScheme === 'dark') await themed.screenshot({ path: `${out}/10-dark-bridge-B04.png` });
+  await themed.click('#run');
+  check(`${colorScheme} theme: the final state matches the control`, JSON.stringify(await state(themed)) === JSON.stringify(control[56]));
+  if (colorScheme === 'dark') await themed.screenshot({ path: `${out}/11-dark-final.png` });
+  const low = [...lowLoaded, ...await contrast(themed, FINAL_PAIRS)];
+  if (colorScheme === 'dark') check(`${colorScheme} theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds`, low.length === 0, low.join(', '));
+  check(`${colorScheme} theme: no console errors`, themeErrors.length === 0, themeErrors.join(';'));
+}
+
 await b.close();
 server.close();
 const failed = results.filter(r => !r).length;

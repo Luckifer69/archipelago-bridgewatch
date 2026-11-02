@@ -25,7 +25,7 @@ PASS  Run to End: plays gradually, not instantly  -> at event 4 after 1.6s
 PASS  Skip: pressing Run to End again jumps to the final state
 PASS  Skip: Step and Run are disabled at the end
 PASS  second Reset is exact
-PASS  a full animated run takes about 20 seconds  -> 21.5s
+PASS  a full animated run takes about 20 seconds  -> 21.6s
 PASS  the animated run ends in the same state and history as stepping
 PASS  stepping all 56 events with animation matches the complete run
 PASS  Load after a finished run restores the same pre-traversal state
@@ -44,5 +44,12 @@ EMERALD|Games|DOUBLOON|4|3
 HOOK|Treasure hunt|GULL|7|7
 PASS  phone width: no horizontal page scroll  -> 390,390
 PASS  phone width: every required table column is visible  -> 348,348
+PASS  light theme: event 44 has the same text, values and map states as the control
+PASS  light theme: the final state matches the control
+PASS  light theme: no console errors
+PASS  dark theme: event 44 has the same text, values and map states as the control
+PASS  dark theme: the final state matches the control
+PASS  dark theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds
+PASS  dark theme: no console errors
 
-34 of 34 checks passed
+41 of 41 checks passed

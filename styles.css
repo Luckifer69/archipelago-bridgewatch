@@ -1,19 +1,49 @@
 :root {
+  color-scheme: light dark;
   --ink: #17303a;
   --muted: #55707a;
   --page: #eef4f6;
   --panel: #ffffff;
   --line: #c9d8dd;
+  --row-line: #e6eef1;
   --accent: #12636e;
+  --topbar: #12636e;
+  --button: #ffffff;
+  --button-ink: #17303a;
+  --button-hover: #d9eef5;
   --water: #d9eef5;
   --sand: #f3d9a4;
   --non-tree: #6a3fa0;
   --danger: #b3261e;
   --current: #e8890c;
+  --highlight: #fdf3e3;
   --gap: 10px;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 15px;
   color: var(--ink);
+}
+
+/* Follows the browser's own setting, so there is no theme switch to build or remember. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e4eff3;
+    --muted: #a3b8c0;
+    --page: #0e181d;
+    --panel: #17242b;
+    --line: #32454e;
+    --row-line: #24353d;
+    --accent: #5cc8d4;
+    --topbar: #0e4750;
+    --button: #d5e6ec;
+    --button-ink: #10242c;
+    --button-hover: #f0f7f9;
+    --water: #12303d;
+    --sand: #d4b26e;
+    --non-tree: #c4a7f5;
+    --danger: #ff8f85;
+    --current: #f2a33a;
+    --highlight: #3a2c14;
+  }
 }
 
 * {
@@ -41,7 +71,7 @@ body {
   align-items: center;
   gap: 8px 16px;
   padding: 8px var(--gap);
-  background: var(--accent);
+  background: var(--topbar);
   color: #fff;
 }
 
@@ -58,17 +88,17 @@ h1 {
 
 button {
   padding: 6px 12px;
-  border: 1px solid #fff;
+  border: 1px solid var(--button);
   border-radius: 6px;
-  background: #fff;
-  color: var(--ink);
+  background: var(--button);
+  color: var(--button-ink);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
 
 button:hover:not(:disabled) {
-  background: #d9eef5;
+  background: var(--button-hover);
 }
 
 button:focus-visible {
@@ -386,7 +416,7 @@ h2 {
 .event-change {
   padding: 4px 8px;
   border-left: 4px solid var(--current);
-  background: #fdf3e3;
+  background: var(--highlight);
   font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
   font-size: 0.86rem;
   font-weight: 600;
@@ -417,7 +447,7 @@ th {
 
 td {
   padding: 3px 6px;
-  border-bottom: 1px solid #e6eef1;
+  border-bottom: 1px solid var(--row-line);
 }
 
 .id-cell {
@@ -435,7 +465,7 @@ td {
 }
 
 .current-row td {
-  background: #fdf3e3;
+  background: var(--highlight);
 }
 
 /* On a phone the required columns must fit, so the optional one gives way. */
@@ -530,5 +560,5 @@ h3 {
 
 .current-item {
   border-radius: 4px;
-  background: #fdf3e3;
+  background: var(--highlight);
 }
