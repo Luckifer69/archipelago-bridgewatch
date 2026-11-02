@@ -277,6 +277,40 @@ h2 {
   font-variant-numeric: tabular-nums;
 }
 
+/* Animation overlay */
+.marker {
+  fill: var(--current);
+  stroke: var(--ink);
+  stroke-width: 0.35;
+}
+
+.travel-line {
+  fill: none;
+  stroke-width: 0.8;
+}
+
+.travel-solid {
+  stroke: var(--accent);
+  stroke-linecap: round;
+}
+
+.travel-dashed {
+  stroke: var(--non-tree);
+  stroke-dasharray: 1.8 1.2;
+}
+
+.pulse-line {
+  stroke: var(--current);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+}
+
+.pulse-ring {
+  fill: none;
+  stroke: var(--current);
+  stroke-width: 0.9;
+}
+
 .legend {
   display: flex;
   flex: none;

@@ -1,6 +1,7 @@
 import { ARCHIPELAGO } from '../archipelago/index.js';
 import { Player } from '../player.js';
 import { Replay } from '../replay.js';
+import { createAnimator } from './animation.js';
 import { renderMap } from './map.js';
 import { renderPanels } from './panels.js';
 
@@ -18,8 +19,11 @@ const panels = {
 
 const replay = new Replay(ARCHIPELAGO);
 
+// The replay moves on when an animation starts, but the screen only catches up when it finishes.
+let shownPosition = -1;
+
 function updateControls() {
-  const { graph, position, total, atEnd } = replay.view();
+  const { graph, total, atEnd } = replay.view();
   const playing = player.isPlaying;
   buttons.step.disabled = !graph || playing || atEnd;
   buttons.run.disabled = !graph || (atEnd && !playing);
@@ -27,25 +31,22 @@ function updateControls() {
   if (!graph) {
     progress.textContent = 'No map loaded';
   } else if (playing) {
-    progress.textContent = `Event ${position + 1} of ${total} · playing, press Run to End again to skip`;
+    progress.textContent = `Event ${shownPosition + 1} of ${total} · playing, press Run to End again to skip`;
   } else {
-    progress.textContent = `Event ${position + 1} of ${total}`;
+    progress.textContent = `Event ${shownPosition + 1} of ${total}`;
   }
 }
 
 function render() {
   const view = replay.view();
+  shownPosition = view.position;
   renderMap(map, view);
   renderPanels(panels, view);
   updateControls();
 }
 
-// The animation arrives in the next commit. Until then every event finishes immediately.
 const player = new Player(replay, {
-  animate: (event, done) => {
-    done();
-    return () => {};
-  },
+  animate: createAnimator(map, () => replay.view().graph),
   render,
 });
 
