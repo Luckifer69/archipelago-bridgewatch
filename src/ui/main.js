@@ -28,13 +28,8 @@ function updateControls() {
   buttons.step.disabled = !graph || playing || atEnd;
   buttons.run.disabled = !graph || (atEnd && !playing);
   buttons.reset.disabled = !graph;
-  if (!graph) {
-    progress.textContent = 'No map loaded';
-  } else if (playing) {
-    progress.textContent = `Event ${shownPosition + 1} of ${total} · playing, press Run to End again to skip`;
-  } else {
-    progress.textContent = `Event ${shownPosition + 1} of ${total}`;
-  }
+  buttons.run.textContent = playing ? 'Skip to End' : 'Run to End';
+  progress.textContent = graph ? `Event ${shownPosition + 1} of ${total}` : 'No map loaded';
 }
 
 function render() {

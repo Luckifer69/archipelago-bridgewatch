@@ -9,11 +9,12 @@ const out = fileURLToPath(new URL('./screenshots', import.meta.url));
 const server = createAppServer();
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 const URL_UNDER_TEST = `http://127.0.0.1:${server.address().port}/`;
-const b = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: 'chrome' });
+// Real scrollbars, as a person sees them: they take up width, so hiding them can hide layout shifts.
+const b = await chromium.launch({ ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: 'chrome' }), ignoreDefaultArgs: ['--hide-scrollbars'] });
 const results = []; const check = (name, ok, extra='') => { results.push(ok); console.log(`${ok?'PASS':'FAIL'}  ${name}${extra?'  -> '+extra:''}`); };
 
 const state = (p) => p.evaluate(() => ({
-  progress: document.querySelector('#progress').textContent.split(' · ')[0],
+  progress: document.querySelector('#progress').textContent,
   event: document.querySelector('#current-event').textContent,
   table: [...document.querySelectorAll('#node-table tbody tr')].map(r => [...r.children].map(c => c.textContent).join('|')),
   summary: document.querySelector('#summary').textContent,
@@ -95,8 +96,8 @@ check('Reset mid-animation: back to the pre-traversal state, and nothing redraws
 await p.click('#run');
 const playing = await dis();
 check('Run to End: Step is disabled while playing', playing[1] === true);
-const hint = await p.textContent('#progress');
-check('Run to End: the status explains how to skip', hint.includes('press Run to End again to skip'), hint);
+const label = await p.textContent('#run');
+check('Run to End: the button offers to skip while playing', label === 'Skip to End', label);
 await p.waitForTimeout(1600);
 const during = await state(p);
 const n = Number(during.progress.split(' ')[1]);
@@ -106,6 +107,7 @@ await p.waitForTimeout(700);
 check('Skip: pressing Run to End again jumps to the final state', JSON.stringify(await state(p)) === JSON.stringify(control[56]));
 const skipped = await dis();
 check('Skip: Step and Run are disabled at the end', skipped[1] && skipped[2]);
+check('Skip: the button goes back to Run to End', await p.textContent('#run') === 'Run to End');
 
 await p.click('#reset');
 check('second Reset is exact', JSON.stringify(await state(p)) === JSON.stringify(control[0]));
@@ -131,11 +133,13 @@ console.log('--- final table ---\n' + full.table.join('\n'));
 const phone = await b.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
 const ph = await phone.newPage();
 await ph.goto(URL_UNDER_TEST); await ph.click('#load'); await ph.click('#run');
-const ps = await ph.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+const ps = await ph.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
 check('phone width: no horizontal page scroll', ps[0] <= ps[1], ps.join(','));
 const tableFit = await ph.evaluate(() => { const box = document.querySelector('#node-table').parentElement; return [box.scrollWidth, box.clientWidth]; });
 check('phone width: every required table column is visible', tableFit[0] <= tableFit[1], tableFit.join(','));
-await ph.screenshot({ path: `${out}/9-phone.png`, fullPage: true });
+// Tall enough to show the whole page, because a full-page capture lays out without the scrollbar but clips as if it were there.
+await ph.setViewportSize({ width: 390, height: await ph.evaluate(() => document.documentElement.scrollHeight) });
+await ph.screenshot({ path: `${out}/9-phone.png` });
 
 // Theme: the browser's setting picks the colours, and nothing else may differ from the light control.
 const contrast = (page, pairs) => page.evaluate((pairs) => {
@@ -174,6 +178,35 @@ for (const colorScheme of ['light', 'dark']) {
   const low = [...lowLoaded, ...await contrast(themed, FINAL_PAIRS)];
   check(`${colorScheme} theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds`, low.length === 0, low.join(', '));
   check(`${colorScheme} theme: no console errors`, themeErrors.length === 0, themeErrors.join(';'));
+}
+
+// Layout: no box or table column may move or resize at any point in a replay.
+const boxes = (page) => page.evaluate(() => [...document.querySelectorAll('.topbar, .panel, #map, #node-table th, .controls button')]
+  .map((el) => { const r = el.getBoundingClientRect(); return [r.left, r.top, r.width, r.height].map(Math.round).join(','); }).join(' '));
+for (const [width, height] of [[1920, 1080], [1536, 738], [1366, 650], [1280, 800], [1000, 700], [768, 1024], [390, 844], [360, 800]]) {
+  const size = `${width}x${height}`;
+  const page = await (await b.newContext({ viewport: { width, height }, reducedMotion: 'reduce' })).newPage();
+  await page.goto(URL_UNDER_TEST); await page.click('#load');
+  const loaded = await boxes(page);
+  let moved = 0; const cut = new Set();
+  for (let i = 0; i < 56; i++) {
+    await page.click('#step');
+    if (await boxes(page) !== loaded) moved++;
+    const found = await page.evaluate(() => {
+      const over = (el) => el.scrollHeight > el.clientHeight;
+      const q = (s) => document.querySelector(s);
+      const wide = [...document.querySelectorAll('#node-table td, #node-table th')].filter((c) => c.scrollWidth > c.clientWidth).map((c) => c.textContent);
+      return [...(over(q('.event-panel')) ? ['event text'] : []), ...(over(q('.table-panel .scroll')) ? ['table rows'] : []), ...wide];
+    });
+    found.forEach((item) => cut.add(item));
+  }
+  check(`${size}: no box or table column moves at any of the 56 events`, moved === 0, `${moved} events moved`);
+  check(`${size}: event text and every island row fit without scrolling or clipping`, cut.size === 0, [...cut].join(', '));
+  const animated = await (await b.newContext({ viewport: { width, height } })).newPage();
+  await animated.goto(URL_UNDER_TEST); await animated.click('#load');
+  const before = await boxes(animated); await animated.click('#run');
+  const playing = await boxes(animated); await animated.click('#run');
+  check(`${size}: nothing moves when Run to End starts or is skipped`, before === playing && before === await boxes(animated));
 }
 
 await b.close();

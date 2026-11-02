@@ -20,12 +20,13 @@ PASS  event 44 matches the control (B04: 3 > 2)
 PASS  event 44 explains B04 with its numbers  -> B04 is a critical bridgeNothing from DOUBLOON onward can reach COMPASS or earlier without B04, so closing it cuts that area off.low[DOUBLOON] = 3 > discovery[COMPASS] = 2: true
 PASS  Reset mid-animation: back to the pre-traversal state, and nothing redraws afterwards
 PASS  Run to End: Step is disabled while playing
-PASS  Run to End: the status explains how to skip  -> Event 0 of 56 · playing, press Run to End again to skip
+PASS  Run to End: the button offers to skip while playing  -> Skip to End
 PASS  Run to End: plays gradually, not instantly  -> at event 4 after 1.6s
 PASS  Skip: pressing Run to End again jumps to the final state
 PASS  Skip: Step and Run are disabled at the end
+PASS  Skip: the button goes back to Run to End
 PASS  second Reset is exact
-PASS  a full animated run takes about 20 seconds  -> 21.6s
+PASS  a full animated run takes about 20 seconds  -> 21.4s
 PASS  the animated run ends in the same state and history as stepping
 PASS  stepping all 56 events with animation matches the complete run
 PASS  Load after a finished run restores the same pre-traversal state
@@ -42,8 +43,8 @@ EMERALD|Games|DOUBLOON|4|3
 ◆ FLAG|Craft market|EMERALD|5|3
 ◆ GULL|Lookout|FLAG|6|6
 HOOK|Treasure hunt|GULL|7|7
-PASS  phone width: no horizontal page scroll  -> 390,390
-PASS  phone width: every required table column is visible  -> 348,348
+PASS  phone width: no horizontal page scroll  -> 375,375
+PASS  phone width: every required table column is visible  -> 333,333
 PASS  light theme: event 44 has the same text, values and map states as the control
 PASS  light theme: the final state matches the control
 PASS  light theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds
@@ -52,5 +53,29 @@ PASS  dark theme: event 44 has the same text, values and map states as the contr
 PASS  dark theme: the final state matches the control
 PASS  dark theme: text reaches 4.5:1 and map lines 3:1 against their backgrounds
 PASS  dark theme: no console errors
+PASS  1920x1080: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  1920x1080: event text and every island row fit without scrolling or clipping
+PASS  1920x1080: nothing moves when Run to End starts or is skipped
+PASS  1536x738: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  1536x738: event text and every island row fit without scrolling or clipping
+PASS  1536x738: nothing moves when Run to End starts or is skipped
+PASS  1366x650: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  1366x650: event text and every island row fit without scrolling or clipping
+PASS  1366x650: nothing moves when Run to End starts or is skipped
+PASS  1280x800: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  1280x800: event text and every island row fit without scrolling or clipping
+PASS  1280x800: nothing moves when Run to End starts or is skipped
+PASS  1000x700: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  1000x700: event text and every island row fit without scrolling or clipping
+PASS  1000x700: nothing moves when Run to End starts or is skipped
+PASS  768x1024: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  768x1024: event text and every island row fit without scrolling or clipping
+PASS  768x1024: nothing moves when Run to End starts or is skipped
+PASS  390x844: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  390x844: event text and every island row fit without scrolling or clipping
+PASS  390x844: nothing moves when Run to End starts or is skipped
+PASS  360x800: no box or table column moves at any of the 56 events  -> 0 events moved
+PASS  360x800: event text and every island row fit without scrolling or clipping
+PASS  360x800: nothing moves when Run to End starts or is skipped
 
-42 of 42 checks passed
+67 of 67 checks passed
