@@ -14,7 +14,7 @@ import { ARCHIPELAGO } from '../src/archipelago/index.js';
 import { GraphState } from '../src/engine/graphState.js';
 import { runLowLink } from '../src/engine/lowlink.js';
 
-const analyse = (input) => runLowLink(new GraphState(input));
+const analyse = (input) => runLowLink(new GraphState(input)).result;
 const row = (result, id) => result.table.find((entry) => entry.id === id);
 
 const graph = (ids, edges = []) => ({

@@ -8,57 +8,110 @@ function addSorted(list, id) {
   }
 }
 
+export function initialSnapshot(graph) {
+  return deepFreeze({
+    nodes: Object.fromEntries(graph.nodeIds.map((id) => [id, { parent: null, discovery: null, low: null }])),
+    edges: Object.fromEntries(graph.edgeIds.map((id) => [id, 'unvisited'])),
+    componentCount: 0,
+    bridges: [],
+    articulations: [],
+  });
+}
+
+// Runs the whole search up front. See docs/EVENTS.md for the event schema and emission order.
 export function runLowLink(graph) {
-  const nodes = Object.fromEntries(graph.nodeIds.map((id) => [id, { parent: null, discovery: null, low: null }]));
-  const bridges = [];
-  const articulations = [];
+  const state = structuredClone(initialSnapshot(graph));
+  const events = [];
   const discoveryOrder = [];
-  let componentCount = 0;
   let clock = 0;
 
-  const finishChild = (u, v, edge, isRoot) => {
-    const node = nodes[u];
-    const child = nodes[v];
-    node.low = Math.min(node.low, child.low);
-    if (child.low > node.discovery) addSorted(bridges, edge);
-    if (!isRoot && child.low >= node.discovery) addSorted(articulations, u);
+  const emit = (type, fields) => {
+    events.push(deepFreeze({ seq: events.length, type, edge: null, ...fields, snapshot: structuredClone(state) }));
   };
 
-  const visit = (u, parent) => {
-    const node = nodes[u];
+  const finishChild = (u, v, edge, isRoot) => {
+    const node = state.nodes[u];
+    const childLow = state.nodes[v].low;
+    const parentDiscovery = node.discovery;
+
+    const lowBefore = node.low;
+    node.low = Math.min(lowBefore, childLow);
+    emit('return', { node: u, child: v, edge, from: v, to: u, childLow, lowBefore, lowAfter: node.low });
+
+    const isBridge = childLow > parentDiscovery;
+    if (isBridge) {
+      state.edges[edge] = 'bridge';
+      addSorted(state.bridges, edge);
+    }
+    emit('bridge-check', { node: u, child: v, edge, childLow, parentDiscovery, isBridge });
+
+    if (!isRoot) {
+      const isArticulation = childLow >= parentDiscovery;
+      if (isArticulation) addSorted(state.articulations, u);
+      emit('articulation-check', { node: u, child: v, edge, childLow, parentDiscovery, isArticulation });
+    }
+  };
+
+  const visit = (u, parent, arrivalEdge) => {
+    const node = state.nodes[u];
     node.parent = parent;
     node.discovery = clock;
     node.low = clock;
     clock += 1;
     discoveryOrder.push(u);
+    emit('discover', {
+      node: u,
+      edge: arrivalEdge,
+      parent,
+      discovery: node.discovery,
+      low: node.low,
+      component: state.componentCount,
+    });
 
     let childCount = 0;
     for (const { neighbour: v, edge } of graph.neighbours(u)) {
-      if (nodes[v].discovery === null) {
+      const inspection = { node: u, neighbour: v, edge, from: u, to: v };
+      if (state.nodes[v].discovery === null) {
         childCount += 1;
-        visit(v, u);
+        state.edges[edge] = 'tree';
+        emit('inspect', { ...inspection, kind: 'tree' });
+        visit(v, u, edge);
         finishChild(u, v, edge, parent === null);
-      } else if (v !== parent) {
+      } else if (v === parent) {
+        emit('inspect', { ...inspection, kind: 'parent' });
+      } else {
         // Discovery, not low: following the neighbour's own low would claim a route the neighbour alone provides.
-        node.low = Math.min(node.low, nodes[v].discovery);
+        const neighbourDiscovery = state.nodes[v].discovery;
+        const lowBefore = node.low;
+        node.low = Math.min(lowBefore, neighbourDiscovery);
+        state.edges[edge] = 'non-tree';
+        emit('inspect', { ...inspection, kind: 'visited', neighbourDiscovery, lowBefore, lowAfter: node.low });
       }
     }
 
-    if (parent === null && childCount >= 2) addSorted(articulations, u);
+    if (parent === null) {
+      const isArticulation = childCount >= 2;
+      if (isArticulation) addSorted(state.articulations, u);
+      emit('root-check', { node: u, childCount, isArticulation });
+    }
+    emit('node-complete', { node: u, discovery: node.discovery, low: node.low });
   };
 
   for (const root of graph.nodeIds) {
-    if (nodes[root].discovery === null) {
-      componentCount += 1;
-      visit(root, null);
+    if (state.nodes[root].discovery === null) {
+      state.componentCount += 1;
+      const clockAtStart = clock;
+      visit(root, null, null);
+      emit('component-complete', { node: root, component: state.componentCount, size: clock - clockAtStart });
     }
   }
 
-  return deepFreeze({
+  const result = deepFreeze({
     discoveryOrder,
-    table: graph.nodeIds.map((id) => ({ id, ...nodes[id] })),
-    componentCount,
-    bridges,
-    articulations,
+    table: graph.nodeIds.map((id) => ({ id, ...state.nodes[id] })),
+    componentCount: state.componentCount,
+    bridges: state.bridges,
+    articulations: state.articulations,
   });
+  return { events, result };
 }
