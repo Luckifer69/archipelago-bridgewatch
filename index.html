@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Treasure-Island Bridge Safety Map</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -22,6 +23,42 @@
       <section class="panel map-panel" aria-labelledby="map-heading">
         <h2 id="map-heading">Island map</h2>
         <svg id="map" role="img" aria-label="Island map"></svg>
+        <ul class="legend" aria-label="Map legend">
+          <li>
+            <svg viewBox="0 0 24 12" aria-hidden="true">
+              <line class="edge edge-unvisited" x1="0" y1="6" x2="9" y2="6" />
+              <circle class="island island-unvisited" cx="17" cy="6" r="4.5" />
+            </svg>
+            Unvisited: dotted line, hollow island
+          </li>
+          <li>
+            <svg viewBox="0 0 24 12" aria-hidden="true">
+              <circle class="island island-visited" cx="12" cy="6" r="3" />
+              <circle class="island-ring" cx="12" cy="6" r="5" />
+            </svg>
+            ▶ Current: thick ring
+          </li>
+          <li>
+            <svg viewBox="0 0 24 12" aria-hidden="true"><line class="edge edge-tree" x1="1" y1="6" x2="23" y2="6" /></svg>
+            DFS-tree: solid line
+          </li>
+          <li>
+            <svg viewBox="0 0 24 12" aria-hidden="true"><line class="edge edge-non-tree" x1="1" y1="6" x2="23" y2="6" /></svg>
+            ↺ Inspected non-tree: dashed line
+          </li>
+          <li>
+            <svg viewBox="0 0 24 12" aria-hidden="true">
+              <line class="edge edge-bridge" x1="1" y1="6" x2="23" y2="6" />
+              <line class="edge-bridge-gap" x1="1" y1="6" x2="23" y2="6" />
+            </svg>
+            ⚠ Critical bridge: heavy double line
+          </li>
+          <li>
+            <svg viewBox="0 0 24 12" aria-hidden="true"><polygon class="island island-visited" points="12,0.5 17.5,6 12,11.5 6.5,6" /></svg>
+            ◆ Articulation island: diamond
+          </li>
+          <li class="legend-note">d = discovery, l = low</li>
+        </ul>
       </section>
       <section class="panel event-panel" aria-labelledby="event-heading">
         <h2 id="event-heading">Current event</h2>
@@ -40,5 +77,7 @@
         <ol id="history" class="scroll"></ol>
       </section>
     </main>
+
+    <script type="module" src="src/ui/main.js"></script>
   </body>
 </html>
