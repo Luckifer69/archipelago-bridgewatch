@@ -21,7 +21,7 @@ test('shuffled and reversed input give identical positions', () => {
 
 test('saved positions match what the script generates', () => {
   const saved = readFileSync(new URL('../src/archipelago/positions.js', import.meta.url), 'utf8');
-  assert.equal(saved, formatPositions(computeLayout(ISLANDS, BRIDGES)));
+  assert.equal(saved.replace(/\r\n/g, '\n'), formatPositions(computeLayout(ISLANDS, BRIDGES)));
 });
 
 test('every island has a position inside the valid range', () => {

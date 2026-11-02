@@ -34,12 +34,12 @@ const copy = mkdtempSync(join(tmpdir(), 'mutation-check-'));
 for (const item of ['package.json', 'server.js', 'index.html', 'styles.css', 'src', 'scripts', 'test', 'fixtures']) {
   cpSync(join(ROOT, item), join(copy, item), { recursive: true });
 }
-symlinkSync(join(ROOT, 'node_modules'), join(copy, 'node_modules'));
+symlinkSync(join(ROOT, 'node_modules'), join(copy, 'node_modules'), 'junction');
 
 let caught = 0;
 for (const [name, file, from, to] of MUTATIONS) {
   const path = join(copy, file);
-  const original = readFileSync(path, 'utf8');
+  const original = readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
   if (!original.includes(from)) throw new Error(`Mutation "${name}" no longer matches ${file}`);
   writeFileSync(path, original.replace(from, to));
 
