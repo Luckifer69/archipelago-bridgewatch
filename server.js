@@ -41,6 +41,7 @@ async function handle(request, response) {
 }
 
 export const createAppServer = () => createServer(handle);
+export default handle;
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // Local only: there is nothing here that needs to be reachable from other machines.
