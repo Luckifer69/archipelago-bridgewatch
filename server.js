@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = fileURLToPath(new URL('.', import.meta.url));
+const ROOT = process.env.VERCEL ? process.cwd() : fileURLToPath(new URL('.', import.meta.url));
 const PORT = Number(process.env.PORT ?? 8000);
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',

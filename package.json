@@ -4,6 +4,7 @@
   "private": true,
   "description": "Interactive replay of a low-link DFS that reveals which bridge or island could split a festival.",
   "type": "module",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "node --test",

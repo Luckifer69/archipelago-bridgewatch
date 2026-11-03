@@ -1,7 +1,4 @@
-# Ignore local development server and test files from Vercel deployment
-# so Vercel serves the app directly as a fast static site.
-server.js
 test/
 fixtures/
 scripts/
-
+docs/
